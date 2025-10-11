@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TodoData>
+  <Categories>
+    <Category>
+      <Id>1</Id>
+      <Name>Work</Name>
+    </Category>
+    <Category>
+      <Id>2</Id>
+      <Name>Study</Name>
+    </Category>
+    <Category>
+      <Id>3</Id>
+      <Name>Personal</Name>
+    </Category>
+    <Category>
+      <Id>4</Id>
+      <Name>Household</Name>
+    </Category>
+    <Category>
+      <Id>5</Id>
+      <Name>General</Name>
+    </Category>
+  </Categories>
+  <Tasks>
+    <Task>
+      <Id>9</Id>
+      <Title>test cookies</Title>
+      <CategoryId>5</CategoryId>
+      <Deadline />
+      <IsCompleted>true</IsCompleted>
+      <CompleteDate>2025-06-17 23:11</CompleteDate>
+    </Task>
+    <Task>
+      <Id>10</Id>
+      <Title>buy milk</Title>
+      <CategoryId>4</CategoryId>
+      <Deadline />
+      <IsCompleted>true</IsCompleted>
+      <CompleteDate>2025-08-12 00:41</CompleteDate>
+    </Task>
+    <Task>
+      <Id>11</Id>
+      <Title>ура</Title>
+      <CategoryId>5</CategoryId>
+      <Deadline />
+      <IsCompleted>false</IsCompleted>
+    </Task>
+  </Tasks>
+</TodoData>

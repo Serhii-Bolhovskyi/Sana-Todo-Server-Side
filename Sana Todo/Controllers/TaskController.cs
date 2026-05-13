@@ -42,20 +42,25 @@ namespace Sana_Todo.Controllers
             return View(todoModel);
         }
 
+        private const int DefaultCategoryId = 5;
+
         [HttpPost]
         public IActionResult AddTask(TaskModel task)
         {
             var storageOption = Request.Cookies["StorageOption"];
             var taskService = _storageFactory.CreateTaskImplement(storageOption);
+           
             if (task.CategoryId == null)
             {
-                    task.CategoryId = 5;
+                    task.CategoryId = DefaultCategoryId;
             }
-            taskService.AddTask(task);
+            
             if (!ModelState.IsValid)
             {
                 return View("Index");
             }
+
+            taskService.AddTask(task);
             return RedirectToAction("Index");
         }
         [HttpPost]

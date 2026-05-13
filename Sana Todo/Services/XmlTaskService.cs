@@ -78,38 +78,41 @@ namespace Sana_Todo.Services
         public TaskModel CompleteTask(TaskModel task)
         {
             var doc = XDocument.Load(_path);
+
             var taskToUpdate = doc.Root.Element("Tasks")?
                 .Elements("Task")
                 .FirstOrDefault(x => int.TryParse(x.Element("Id")?.Value, out var taskId) && taskId == task.Id);
-            var currentState = bool.TryParse(taskToUpdate.Element("IsCompleted")?.Value, out var completed) && completed;
-            if (taskToUpdate != null)
+
+            if (taskToUpdate == null)
             {
-                taskToUpdate.SetElementValue("IsCompleted", !completed);
-                if (!completed)
-                {
-                    taskToUpdate.SetElementValue("CompleteDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
-                }
-                else
-                {
-                    taskToUpdate.Element("CompleteDate")?.Remove();
-                }
-
-                doc.Save(_path);
-
-                if(taskToUpdate != null)
-                {
-                    return new TaskModel
-                    {
-                        Id = int.Parse(taskToUpdate.Element("Id")?.Value ?? "0"),
-                        Title = taskToUpdate.Element("Title")?.Value,
-                        CategoryId = int.TryParse(taskToUpdate.Element("CategoryId")?.Value, out var catId) ? catId : (int?)null,
-                        Deadline = DateTime.TryParse(taskToUpdate.Element("Deadline")?.Value, out var deadline) ? deadline : (DateTime?)null,
-                        IsCompleted = bool.TryParse(taskToUpdate.Element("IsCompleted")?.Value, out var isComp) && isComp,
-                        CompleteDate = DateTime.TryParse(taskToUpdate.Element("CompleteDate")?.Value, out var compDate) ? compDate : (DateTime?)null
-                    };
-                } else { Console.WriteLine($"Task with ID {task.Id} not found in XML."); }
+                Console.WriteLine($"Task with ID {task.Id} not found in XML.");
+                return null;
             }
-            return null;
+
+            var currentState = bool.TryParse(taskToUpdate.Element("IsCompleted")?.Value, out var completed) && completed;
+
+            taskToUpdate.SetElementValue("IsCompleted", !completed);
+
+            if (!completed)
+            {
+                taskToUpdate.SetElementValue("CompleteDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
+            }
+            else
+            {
+                taskToUpdate.Element("CompleteDate")?.Remove();
+            }
+
+            doc.Save(_path);
+
+            return new TaskModel
+            {
+                Id = int.Parse(taskToUpdate.Element("Id")?.Value ?? "0"),
+                Title = taskToUpdate.Element("Title")?.Value,
+                CategoryId = int.TryParse(taskToUpdate.Element("CategoryId")?.Value, out var catId) ? catId : (int?)null,
+                Deadline = DateTime.TryParse(taskToUpdate.Element("Deadline")?.Value, out var deadline) ? deadline : (DateTime?)null,
+                IsCompleted = bool.TryParse(taskToUpdate.Element("IsCompleted")?.Value, out var isComp) && isComp,
+                CompleteDate = DateTime.TryParse(taskToUpdate.Element("CompleteDate")?.Value, out var compDate) ? compDate : (DateTime?)null
+            };
         }
     }
 }

@@ -16,6 +16,12 @@ namespace Sana_Todo.Controllers
             _storageFactory = storageFactory;
         }
 
+        private ITaskImplement GetTaskService()
+        {
+            var storageOption = Request.Cookies["StorageOption"];
+            return _storageFactory.CreateTaskImplement(storageOption);
+        }
+
         [HttpPost]
         public IActionResult SetStorageOption(string storageOption)
         {
@@ -25,10 +31,7 @@ namespace Sana_Todo.Controllers
         }
         public IActionResult Index()
         {
-            var storageOption = Request.Cookies["StorageOption"];
-            Console.WriteLine($"[DEBUG] storageOption: {storageOption}");
-
-            var taskService = _storageFactory.CreateTaskImplement(storageOption);
+            var taskService = GetTaskService();
 
             var tasks = taskService.GetAllTasks();
             var categories = taskService.GetAllCategories();
@@ -36,7 +39,7 @@ namespace Sana_Todo.Controllers
             {
                 Tasks = tasks,
                 Categories = categories,
-                StorageOption = storageOption
+                StorageOption = Request.Cookies["StorageOption"]
             };
 
             return View(todoModel);
@@ -47,9 +50,8 @@ namespace Sana_Todo.Controllers
         [HttpPost]
         public IActionResult AddTask(TaskModel task)
         {
-            var storageOption = Request.Cookies["StorageOption"];
-            var taskService = _storageFactory.CreateTaskImplement(storageOption);
-           
+            var taskService = GetTaskService();
+
             if (task.CategoryId == null)
             {
                     task.CategoryId = DefaultCategoryId;
@@ -66,21 +68,18 @@ namespace Sana_Todo.Controllers
         [HttpPost]
         public IActionResult DeleteTask(int Id)
         {
-            var storageOption = Request.Cookies["StorageOption"];
-            var taskService = _storageFactory.CreateTaskImplement(storageOption);
+            var taskService = GetTaskService();
             taskService.DeleteTask(Id);
             return RedirectToAction("Index");
         }
         [HttpPost]
         public IActionResult CompleteTask(TaskModel task)
         {
-            var storageOption = Request.Cookies["StorageOption"];
-            var taskService = _storageFactory.CreateTaskImplement(storageOption);
+            var taskService = GetTaskService();
 
-                taskService.CompleteTask(task);
-
-
-                return RedirectToAction("Index");
+            taskService.CompleteTask(task);
+            
+            return RedirectToAction("Index");
         }
     }
 
